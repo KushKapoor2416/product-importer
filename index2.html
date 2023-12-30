@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Importer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .import-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .file-label {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .import-button {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .product-list {
+            margin-top: 20px;
+        }
+
+        .product {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .product strong {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Product Importer</h1>
+        <div class="import-container">
+            <label for="fileInput" class="file-label">
+                <span class="file-icon">📂</span> Choose a file
+            </label>
+            <input type="file" id="fileInput" class="file-input" accept=".json">
+            <button onclick="importData()" class="import-button">Import Data</button>
+        </div>
+        <div id="product-list" class="product-list"></div>
+    </div>
+
+    <script>
+        function importData() {
+            const fileInput = document.getElementById("fileInput");
+            const productListElement = document.getElementById("product-list");
+
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file.");
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    // Assuming the JSON structure is an array of products
+                    displayProducts(data, productListElement);
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
+                    alert("Error parsing JSON. Please check if the file is valid.");
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        function displayProducts(products, element) {
+            // Clear existing content
+            element.innerHTML = "";
+
+            // Display products
+            products.forEach(product => {
+                const productElement = document.createElement("div");
+                productElement.classList.add("product");
+                productElement.innerHTML = `<strong>${product.Title}</strong> - Price: $${product.Price.toFixed(2)}`;
+                element.appendChild(productElement);
+            });
+        }
+    </script>
+</body>
+</html>
